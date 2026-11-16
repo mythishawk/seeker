@@ -17,18 +17,30 @@ public final class FilterEngine {
         return new FilterEngine(List.of(
                 new BlocklistRule(),
                 new TitleKeywordRule(),
+                new RoleKeywordRule(),
                 new LocationRule(),
                 new ExperienceRule(),
                 new DealBreakerRule()));
     }
 
+    /**
+     * The first hard rejection, if any. A review result (see Rejection.isReview) does not stop the remaining rules,
+     * because a later rule may still reject the job outright; if none does, the first review result is returned.
+     */
     public Optional<Rejection> firstRejection(FilterContext context) {
+        Optional<Rejection> review = Optional.empty();
         for (FilterRule rule : rules) {
             Optional<Rejection> rejection = rule.check(context);
-            if (rejection.isPresent()) {
+            if (rejection.isEmpty()) {
+                continue;
+            }
+            if (!rejection.get().isReview()) {
                 return rejection;
             }
+            if (review.isEmpty()) {
+                review = rejection;
+            }
         }
-        return Optional.empty();
+        return review;
     }
 }

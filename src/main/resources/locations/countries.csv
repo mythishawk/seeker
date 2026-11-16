@@ -3,7 +3,7 @@
 # Locations that mention any country other than IN, and no Indian place, are treated as "not in India".
 # Add more aliases or countries as you meet them; matching is whole-word and ignores case.
 IN;india|bharat|maharashtra|karnataka|tamil nadu|tamilnadu|telangana|andhra pradesh|kerala|gujarat|rajasthan|haryana|uttar pradesh|west bengal|madhya pradesh|odisha|bihar|jharkhand|uttarakhand|assam|chhattisgarh|himachal pradesh|jammu and kashmir
-US;united states|united states of america|usa|us|u s|u s a|america|new york|nyc|san francisco|sf|seattle|austin|boston|chicago|los angeles|atlanta|denver|california|texas|washington dc|palo alto|mountain view|sunnyvale|san jose|brooklyn|bay area|silicon valley|miami|dallas|houston|portland|san diego|philadelphia|raleigh|pittsburgh
+US;united states|united states of america|usa|us|u s|u s a|america|new york|nyc|san francisco|sf|seattle|austin|boston|chicago|los angeles|atlanta|denver|california|texas|washington dc|palo alto|mountain view|sunnyvale|san jose|brooklyn|bay area|silicon valley|miami|dallas|houston|portland|san diego|philadelphia|raleigh|pittsburgh|ny|ca|wa|tx|ma|dc|washington d c|new york city|washington state|massachusetts|new jersey|virginia|florida|colorado|oregon|georgia us
 GB;united kingdom|uk|u k|great britain|england|scotland|wales|london|manchester|edinburgh
 CA;canada|toronto|vancouver|montreal|ottawa|calgary
 DE;germany|deutschland|berlin|munich|hamburg|frankfurt

@@ -94,4 +94,40 @@ class LocationNormalizerTest {
         assertTrue(normalizer.normalize(null).blank());
         assertTrue(normalizer.normalize("   ").blank());
     }
+
+    // ---- the word "in" must not mean India ----
+
+    @Test
+    void theWordInIsNotIndia() {
+        for (String text : new String[] {"Remote in US", "Remote in Canada", "Based in Germany",
+                "Toronto Canada, San Francisco, Remote in US, Remote in Canada"}) {
+            NormalizedLocation loc = normalizer.normalize(text);
+            assertFalse(loc.indiaSignal(), text);
+            assertFalse(loc.foreignCountries().isEmpty(), text);
+        }
+        assertEquals("Remote - CA, US",
+                normalizer.normalize("Toronto Canada, San Francisco, Remote in US, Remote in Canada").canonical());
+    }
+
+    @Test
+    void countryCodesAreNotSearchWords() {
+        // IT, NO, AT, BE, ID are English words; they must not be read as Italy, Norway, Austria, Belgium, Indonesia.
+        assertTrue(normalizer.normalize("IT Support Hub").foreignCountries().isEmpty());
+        assertTrue(normalizer.normalize("No fixed location").foreignCountries().isEmpty());
+    }
+
+    @Test
+    void californiaIsNotCanada() {
+        NormalizedLocation loc = normalizer.normalize("Los Angeles, CA");
+        assertEquals(Set.of("US"), loc.foreignCountries());
+        assertFalse(loc.indiaSignal());
+    }
+
+    @Test
+    void indiaStillRecognisedByName() {
+        assertTrue(normalizer.normalize("Remote - India").indiaSignal());
+        assertTrue(normalizer.normalize("India").indiaSignal());
+        assertTrue(normalizer.normalize("Remote in India").indiaSignal());
+        assertTrue(normalizer.normalize("Pune, Maharashtra").indiaSignal());
+    }
 }

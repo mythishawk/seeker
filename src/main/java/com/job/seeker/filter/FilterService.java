@@ -30,7 +30,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Cleans each new job (location, years of experience, dedupe fingerprint) and applies the hard rules.
- * Jobs that fail a rule become SKIPPED with a reason; jobs that pass stay DISCOVERED and wait for scoring.
+ * Jobs that fail a rule become SKIPPED with a reason; jobs that need a human look (a plain Remote location with no
+ * country, for example) become NEEDS_REVIEW; jobs that pass stay DISCOVERED and wait for scoring.
  * No AI is involved. Work is done in batches of 200, each in its own transaction.
  */
 @Service
@@ -129,7 +130,8 @@ public class FilterService {
                 preference.isRemoteOk(),
                 preference.getProfile().isWillingToRelocate(),
                 preference.getMinExperienceYears(),
-                preference.getMaxExperienceYears());
+                preference.getMaxExperienceYears(),
+                normalizeAll(preference.getRequiredTitleKeywords()));
     }
 
     private static List<String> normalizeAll(List<String> values) {
@@ -149,7 +151,8 @@ public class FilterService {
     private Long processBatch(long afterId, boolean refilter, FilterSettings settings, Tally tally) {
         Pageable page = PageRequest.of(0, BATCH_SIZE);
         List<Application> batch = refilter
-                ? applicationRepository.findRefilterCandidates(afterId, ApplicationStatus.DISCOVERED, ApplicationStatus.SKIPPED, page)
+                ? applicationRepository.findRefilterCandidates(afterId, ApplicationStatus.DISCOVERED, ApplicationStatus.SKIPPED,
+                        ApplicationStatus.NEEDS_REVIEW, page)
                 : applicationRepository.findPendingFilter(afterId, ApplicationStatus.DISCOVERED, page);
         if (batch.isEmpty()) {
             return null;
@@ -182,7 +185,12 @@ public class FilterService {
         }
 
         tally.processed++;
-        if (rejection.isPresent()) {
+        if (rejection.isPresent() && rejection.get().isReview()) {
+            application.setStatus(ApplicationStatus.NEEDS_REVIEW);
+            application.setFilterReason(rejection.get().format());
+            tally.needsReview++;
+            tally.reasons.merge(rejection.get().reason().name(), 1, Integer::sum);
+        } else if (rejection.isPresent()) {
             application.setStatus(ApplicationStatus.SKIPPED);
             application.setFilterReason(rejection.get().format());
             tally.skipped++;
@@ -198,10 +206,11 @@ public class FilterService {
         int processed;
         int passed;
         int skipped;
+        int needsReview;
         final Map<String, Integer> reasons = new TreeMap<>();
 
         FilterResult toResult() {
-            return new FilterResult(true, false, "Done.", processed, passed, skipped, Map.copyOf(reasons));
+            return new FilterResult(true, false, "Done.", processed, passed, skipped, needsReview, Map.copyOf(reasons));
         }
     }
 }

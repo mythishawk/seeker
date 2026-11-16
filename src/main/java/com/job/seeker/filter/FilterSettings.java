@@ -9,6 +9,7 @@ import java.util.Set;
  *
  * @param blockedCompanies   normalized company names that must never be applied to
  * @param excludedTitleKeywords normalized words or phrases that reject a job when found in its title
+ * @param requiredTitleKeywords normalized words or phrases of which at least one must be in the title (empty means any title)
  * @param dealBreakerKeywords   normalized phrases that reject a job when found in its title or description
  * @param preferredCities    canonical cities the user wants (empty means no preference)
  * @param remoteOk           remote jobs are welcome
@@ -24,5 +25,6 @@ public record FilterSettings(
         boolean remoteOk,
         boolean willingToRelocate,
         Integer minExperienceYears,
-        Integer maxExperienceYears) {
+        Integer maxExperienceYears,
+        List<String> requiredTitleKeywords) {
 }

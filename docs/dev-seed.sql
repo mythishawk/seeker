@@ -14,15 +14,17 @@ WITH new_profile AS (
 )
 INSERT INTO preference (profile_id, target_titles, locations, remote_ok,
                         min_experience_years, max_experience_years, min_score,
-                        excluded_title_keywords, deal_breaker_keywords)
+                        excluded_title_keywords, deal_breaker_keywords, required_title_keywords)
 SELECT id,
-       ARRAY['Java Backend Developer', 'Software Engineer'],   -- used for scoring later, not for hard filtering
-       ARRAY['Pune'],                                           -- preferred cities; ignored for jobs when willing_to_relocate is TRUE
+       to_jsonb(ARRAY['Java Backend Developer', 'Software Engineer']),   -- used for scoring later, not for hard filtering
+       to_jsonb(ARRAY['Pune']),                                           -- preferred cities; ignored for jobs when willing_to_relocate is TRUE
        TRUE,                                                    -- remote jobs welcome
        1, 5,                                                    -- apply only to jobs asking for 1 to 5 years of experience
        70,
-       ARRAY['intern', 'internship', 'principal', 'staff', 'director', 'head of', 'sales', 'recruiter'],
-       ARRAY['security clearance', 'must relocate abroad']
+       to_jsonb(ARRAY['intern', 'internship', 'principal', 'staff', 'director', 'head of', 'sales', 'recruiter']),
+       to_jsonb(ARRAY['security clearance', 'must relocate abroad']),
+       -- a job title must contain at least one of these words, or the job is skipped as TITLE_NOT_RELEVANT
+       to_jsonb(ARRAY['backend', 'back end', 'software engineer', 'software developer', 'software development', 'sde', 'java'])
 FROM new_profile;
 
 -- 2. Companies you never want to apply to (your current employer, for example).

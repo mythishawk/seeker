@@ -20,12 +20,12 @@ public class Preference extends BaseEntity {
     @JoinColumn(name = "profile_id", nullable = false, unique = true)
     private Profile profile;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(columnDefinition = "text[]", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
     private List<String> targetTitles = new ArrayList<>();
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(columnDefinition = "text[]", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
     private List<String> locations = new ArrayList<>();
 
     @Column(nullable = false)
@@ -38,13 +38,18 @@ public class Preference extends BaseEntity {
     @Column(nullable = false)
     private int minScore = 70;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(columnDefinition = "text[]", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
     private List<String> excludedTitleKeywords = new ArrayList<>();
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(columnDefinition = "text[]", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
     private List<String> dealBreakerKeywords = new ArrayList<>();
+
+    /** A job title must contain at least one of these words to pass (empty list: any title is fine). */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
+    private List<String> requiredTitleKeywords = new ArrayList<>();
 
     public Profile getProfile() {
         return profile;
@@ -116,5 +121,13 @@ public class Preference extends BaseEntity {
 
     public void setDealBreakerKeywords(List<String> dealBreakerKeywords) {
         this.dealBreakerKeywords = dealBreakerKeywords;
+    }
+
+    public List<String> getRequiredTitleKeywords() {
+        return requiredTitleKeywords;
+    }
+
+    public void setRequiredTitleKeywords(List<String> requiredTitleKeywords) {
+        this.requiredTitleKeywords = requiredTitleKeywords;
     }
 }

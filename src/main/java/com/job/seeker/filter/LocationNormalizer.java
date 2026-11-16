@@ -111,7 +111,10 @@ public final class LocationNormalizer {
             }
             String value = trimmed.substring(0, split).trim();
             Set<String> texts = new LinkedHashSet<>();
-            texts.add(Texts.normalize(value));
+            // A city name is also a search word. A country code is not: IN, IT, NO, AT, BE are plain English words.
+            if (city) {
+                texts.add(Texts.normalize(value));
+            }
             for (String alias : trimmed.substring(split + 1).split("\\|")) {
                 texts.add(Texts.normalize(alias));
             }

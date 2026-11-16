@@ -11,7 +11,7 @@ import com.job.seeker.domain.SourceType;
 import com.job.seeker.filter.FilterReason;
 import com.job.seeker.repository.ApplicationRepository;
 import com.job.seeker.repository.CompanySourceRepository;
-import com.job.seeker.repository.JobRepository;
+import com.job.seeker.repository.JobPostingRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class DiscoveryService {
     private static final int SUSPICIOUS_EMPTY_OPEN_JOBS = 5;
 
     private final CompanySourceRepository companySourceRepository;
-    private final JobRepository jobRepository;
+    private final JobPostingRepository JobPostingRepository ;
     private final ApplicationRepository applicationRepository;
     private final Map<SourceType, JobBoardClient> clients = new EnumMap<>(SourceType.class);
     private final DiscoveryProperties properties;
@@ -54,14 +54,14 @@ public class DiscoveryService {
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     public DiscoveryService(CompanySourceRepository companySourceRepository,
-                            JobRepository jobRepository,
+                            JobPostingRepository JobPostingRepository ,
                             ApplicationRepository applicationRepository,
                             List<JobBoardClient> boardClients,
                             DiscoveryProperties properties,
                             Clock clock,
                             PlatformTransactionManager transactionManager) {
         this.companySourceRepository = companySourceRepository;
-        this.jobRepository = jobRepository;
+        this.JobPostingRepository  = JobPostingRepository ;
         this.applicationRepository = applicationRepository;
         this.properties = properties;
         this.clock = clock;
@@ -132,7 +132,7 @@ public class DiscoveryService {
         String sourceKey = source.getSourceType().name().toLowerCase(Locale.ROOT);
 
         Map<String, Job> existing = new HashMap<>();
-        for (Job job : jobRepository.findByCompanySourceId(sourceId)) {
+        for (Job job : JobPostingRepository .findByCompanySourceId(sourceId)) {
             existing.put(job.getExternalId(), job);
         }
         Map<Long, Application> applicationsByJob = new HashMap<>();
@@ -150,7 +150,7 @@ public class DiscoveryService {
             }
             Job job = existing.get(f.externalId());
             if (job == null) {
-                Job elsewhere = jobRepository.findBySourceAndExternalId(sourceKey, f.externalId()).orElse(null);
+                Job elsewhere = JobPostingRepository.findBySourceAndExternalId(sourceKey, f.externalId()).orElse(null);
                 if (elsewhere != null) {
                     // Already tracked under another watchlist row: just note that it is still open.
                     elsewhere.setLastSeenAt(now);
@@ -190,7 +190,7 @@ public class DiscoveryService {
         job.setCompany(source.getCompany());
         applyContent(job, f);
         job.setLastSeenAt(now);
-        jobRepository.save(job);
+        JobPostingRepository.save(job);
 
         Application application = new Application();
         application.setJob(job);
@@ -221,7 +221,8 @@ public class DiscoveryService {
         }
         applyContent(job, f);
         job.setFilteredAt(null);
-        if (application != null && (application.getStatus() == ApplicationStatus.DISCOVERED || skippedByFilter(application))) {
+        if (application != null && (application.getStatus() == ApplicationStatus.DISCOVERED
+                || application.getStatus() == ApplicationStatus.NEEDS_REVIEW || skippedByFilter(application))) {
             application.setStatus(ApplicationStatus.DISCOVERED);
             application.setFilterReason(null);
         }
@@ -256,7 +257,7 @@ public class DiscoveryService {
             return;
         }
         switch (application.getStatus()) {
-            case DISCOVERED, MATCHED -> {
+            case DISCOVERED, MATCHED, NEEDS_REVIEW -> {
                 application.setStatus(ApplicationStatus.SKIPPED);
                 application.setFilterReason(FilterReason.JOB_CLOSED.name());
             }

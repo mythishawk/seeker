@@ -20,7 +20,8 @@ class FilterRulesTest {
                 Set.of(CompanyNames.normalize("Accenture")),
                 List.of(Texts.normalize("intern"), Texts.normalize("tech lead")),
                 List.of(Texts.normalize("security clearance")),
-                preferredCities, remoteOk, relocate, minYears, maxYears);
+                preferredCities, remoteOk, relocate, minYears, maxYears,
+                List.of(Texts.normalize("backend"), Texts.normalize("back end"), Texts.normalize("software engineer"), Texts.normalize("java")));
     }
 
     private FilterContext context(String company, String title, String description, String location,
@@ -102,7 +103,7 @@ class FilterRulesTest {
 
     @Test
     void plainRemoteNeedsRemoteOk() {
-        assertTrue(new LocationRule().check(simple("Remote", relocating)).isEmpty());
+        assertEquals(FilterReason.LOCATION_COUNTRY_UNKNOWN, reasonOf(new LocationRule().check(simple("Remote", relocating))));
         assertEquals(FilterReason.REMOTE_NOT_WANTED, reasonOf(new LocationRule().check(simple("Remote", puneOnly))));
     }
 
@@ -187,6 +188,58 @@ class FilterRulesTest {
     void engineLetsAGoodJobThrough() {
         FilterContext ctx = context("Acme", "Java Backend Developer", "3-5 years of experience.", "Pune",
                 new ExperienceRange(3, 5), puneOnly);
+        assertTrue(FilterEngine.standard().firstRejection(ctx).isEmpty());
+    }
+
+    // ---- role keywords ----
+
+    @Test
+    void titleMustContainARequiredWord() {
+        assertTrue(new RoleKeywordRule().check(context("Acme", "Java Backend Developer", "", "Pune", null, relocating)).isEmpty());
+        assertTrue(new RoleKeywordRule().check(context("Acme", "Senior Back-End Engineer", "", "Pune", null, relocating)).isEmpty());
+        assertTrue(new RoleKeywordRule().check(context("Acme", "Software Engineer II", "", "Pune", null, relocating)).isEmpty());
+        assertEquals(FilterReason.TITLE_NOT_RELEVANT,
+                reasonOf(new RoleKeywordRule().check(context("Acme", "Risk Operations Analyst", "", "Pune", null, relocating))));
+    }
+
+    @Test
+    void javaDoesNotMatchJavaScript() {
+        assertEquals(FilterReason.TITLE_NOT_RELEVANT,
+                reasonOf(new RoleKeywordRule().check(context("Acme", "JavaScript Designer", "", "Pune", null, relocating))));
+    }
+
+    @Test
+    void noRequiredWordsMeansEveryTitlePasses() {
+        FilterSettings open = new FilterSettings(Set.of(), List.of(), List.of(), Set.of(), true, true, null, null, List.of());
+        assertTrue(new RoleKeywordRule().check(context("Acme", "Risk Operations Analyst", "", "Pune", null, open)).isEmpty());
+    }
+
+    // ---- review outcome and the engine ----
+
+    @Test
+    void plainRemoteIsAReviewResultNotARejection() {
+        FilterContext ctx = context("Acme", "Java Developer", "", "Remote", null, relocating);
+        Optional<Rejection> result = FilterEngine.standard().firstRejection(ctx);
+        assertEquals(FilterReason.LOCATION_COUNTRY_UNKNOWN, reasonOf(result));
+        assertTrue(result.get().isReview());
+    }
+
+    @Test
+    void aHardRejectionBeatsAnEarlierReview() {
+        // Plain Remote would be a review, but the title is not a wanted role, so it is skipped.
+        FilterContext ctx = context("Acme", "Risk Operations Analyst", "", "Remote", null, relocating);
+        Optional<Rejection> result = FilterEngine.standard().firstRejection(ctx);
+        assertEquals(FilterReason.TITLE_NOT_RELEVANT, reasonOf(result));
+        assertTrue(!result.get().isReview());
+
+        // Plain Remote, wanted role, but too senior: still skipped, not reviewed.
+        FilterContext senior = context("Acme", "Java Developer", "", "Remote", new ExperienceRange(8, null), relocating);
+        assertEquals(FilterReason.EXPERIENCE_TOO_SENIOR, reasonOf(FilterEngine.standard().firstRejection(senior)));
+    }
+
+    @Test
+    void remoteIndiaForAWantedRolePassesCleanly() {
+        FilterContext ctx = context("Acme", "Backend Engineer", "", "Remote - India", null, relocating);
         assertTrue(FilterEngine.standard().firstRejection(ctx).isEmpty());
     }
 }

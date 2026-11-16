@@ -17,6 +17,7 @@ public enum ApplicationStatus {
     REJECTED_BY_COMPANY,
     DECLINED,
     SKIPPED,
+    NEEDS_REVIEW,
     NEEDS_INPUT,
     MANUAL,
     FAILED,

@@ -27,16 +27,18 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
                                         @Param("status") ApplicationStatus status,
                                         Pageable pageable);
 
-    /** Every DISCOVERED job, plus jobs skipped by a filter (not because they closed), for a second look. */
+    /** Every DISCOVERED job, jobs waiting for review, and jobs skipped by a filter (not because they closed), for a second look. */
     @Query("""
             select a from Application a join fetch a.job j
             where a.id > :afterId
               and (a.status = :discovered
+                   or a.status = :review
                    or (a.status = :skipped and a.filterReason is not null and a.filterReason not like 'JOB_CLOSED%'))
             order by a.id""")
     List<Application> findRefilterCandidates(@Param("afterId") long afterId,
                                              @Param("discovered") ApplicationStatus discovered,
                                              @Param("skipped") ApplicationStatus skipped,
+                                             @Param("review") ApplicationStatus review,
                                              Pageable pageable);
 
     /** Is there an earlier, still-open posting with the same fingerprint that has not been skipped? */
