@@ -54,6 +54,9 @@ public class Application extends AuditedEntity {
     @Version
     private long version;
 
+    @Column(length = 300)
+    private String filterReason;
+
     public Job getJob() {
         return job;
     }
@@ -140,5 +143,13 @@ public class Application extends AuditedEntity {
 
     public void setVersion(long version) {
         this.version = version;
+    }
+
+    public String getFilterReason() {
+        return filterReason;
+    }
+
+    public void setFilterReason(String filterReason) {
+        this.filterReason = filterReason;
     }
 }

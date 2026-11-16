@@ -38,6 +38,14 @@ public class Preference extends BaseEntity {
     @Column(nullable = false)
     private int minScore = 70;
 
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(columnDefinition = "text[]", nullable = false)
+    private List<String> excludedTitleKeywords = new ArrayList<>();
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(columnDefinition = "text[]", nullable = false)
+    private List<String> dealBreakerKeywords = new ArrayList<>();
+
     public Profile getProfile() {
         return profile;
     }
@@ -92,5 +100,21 @@ public class Preference extends BaseEntity {
 
     public void setMinScore(int minScore) {
         this.minScore = minScore;
+    }
+
+    public List<String> getExcludedTitleKeywords() {
+        return excludedTitleKeywords;
+    }
+
+    public void setExcludedTitleKeywords(List<String> excludedTitleKeywords) {
+        this.excludedTitleKeywords = excludedTitleKeywords;
+    }
+
+    public List<String> getDealBreakerKeywords() {
+        return dealBreakerKeywords;
+    }
+
+    public void setDealBreakerKeywords(List<String> dealBreakerKeywords) {
+        this.dealBreakerKeywords = dealBreakerKeywords;
     }
 }

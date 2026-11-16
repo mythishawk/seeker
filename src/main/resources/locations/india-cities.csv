@@ -1,0 +1,44 @@
+# Indian cities for the location normalizer.
+# Format:  Canonical city;alias|alias|...
+# Aliases are matched as whole words, ignoring case and punctuation. Add your own as you meet them.
+# Nearby places share one canonical city (for example Thane counts as Mumbai, Gurgaon as Delhi NCR).
+Bengaluru;bangalore|bengaluru|bengalooru|blr|whitefield|electronic city|koramangala|hsr layout|indiranagar|bellandur|marathahalli|manyata|bannerghatta
+Pune;pune|pimpri chinchwad|pimpri|chinchwad|hinjewadi|hinjawadi|kharadi|baner|hadapsar|magarpatta|viman nagar|wakad|kalyani nagar|yerwada|bavdhan|aundh|talegaon
+Mumbai;mumbai|bombay|navi mumbai|thane|powai|andheri|bkc|bandra|vashi|airoli|mulund|goregaon|malad|worli|lower parel|ghatkopar|vikhroli|kurla
+Hyderabad;hyderabad|secunderabad|hitech city|hi tech city|hitec city|madhapur|gachibowli|kondapur|cyberabad
+Chennai;chennai|madras|siruseri|sholinganallur|guindy|ambattur|tidel park
+Kolkata;kolkata|calcutta|howrah
+Delhi NCR;delhi|new delhi|delhi ncr|ncr|national capital region|gurugram|gurgaon|noida|greater noida|ghaziabad|faridabad|udyog vihar|manesar
+Ahmedabad;ahmedabad
+Gandhinagar;gandhinagar|gift city
+Jaipur;jaipur
+Chandigarh;chandigarh|mohali|panchkula|zirakpur|tricity|sas nagar
+Kochi;kochi|cochin|ernakulam|kakkanad|infopark
+Thiruvananthapuram;thiruvananthapuram|trivandrum|technopark
+Coimbatore;coimbatore|kovai
+Indore;indore
+Bhopal;bhopal
+Nagpur;nagpur
+Lucknow;lucknow
+Visakhapatnam;visakhapatnam|vizag
+Mysuru;mysuru|mysore
+Bhubaneswar;bhubaneswar
+Nashik;nashik|nasik
+Vadodara;vadodara|baroda
+Surat;surat
+Goa;goa|panaji|panjim|porvorim
+Patna;patna
+Ranchi;ranchi
+Dehradun;dehradun
+Kanpur;kanpur
+Mangaluru;mangaluru|mangalore
+Madurai;madurai
+Vijayawada;vijayawada|amaravati
+Guwahati;guwahati
+Raipur;raipur
+Jodhpur;jodhpur
+Udaipur;udaipur
+Tiruchirappalli;tiruchirappalli|trichy
+Hubballi;hubballi|hubli|dharwad
+Kozhikode;kozhikode|calicut
+Aurangabad;aurangabad|chhatrapati sambhajinagar

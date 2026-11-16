@@ -10,4 +10,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     Optional<Job> findBySourceAndExternalId(String source, String externalId);
 
     List<Job> findByDedupeHash(String dedupeHash);
+
+    List<Job> findByCompanySourceId(Long companySourceId);
 }

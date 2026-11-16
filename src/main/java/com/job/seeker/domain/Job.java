@@ -2,6 +2,9 @@ package com.job.seeker.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
@@ -55,6 +58,12 @@ public class Job extends BaseEntity {
     private Instant lastSeenAt = Instant.now();
 
     private Instant closedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_source_id")
+    private CompanySource companySource;
+
+    private Instant filteredAt;
 
     public String getSource() {
         return source;
@@ -182,5 +191,21 @@ public class Job extends BaseEntity {
 
     public void setClosedAt(Instant closedAt) {
         this.closedAt = closedAt;
+    }
+
+    public CompanySource getCompanySource() {
+        return companySource;
+    }
+
+    public void setCompanySource(CompanySource companySource) {
+        this.companySource = companySource;
+    }
+
+    public Instant getFilteredAt() {
+        return filteredAt;
+    }
+
+    public void setFilteredAt(Instant filteredAt) {
+        this.filteredAt = filteredAt;
     }
 }

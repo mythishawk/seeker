@@ -1,0 +1,56 @@
+# Countries for the location normalizer.
+# Format:  COUNTRY CODE;alias|alias|...   (IN means India: country name and Indian states)
+# Locations that mention any country other than IN, and no Indian place, are treated as "not in India".
+# Add more aliases or countries as you meet them; matching is whole-word and ignores case.
+IN;india|bharat|maharashtra|karnataka|tamil nadu|tamilnadu|telangana|andhra pradesh|kerala|gujarat|rajasthan|haryana|uttar pradesh|west bengal|madhya pradesh|odisha|bihar|jharkhand|uttarakhand|assam|chhattisgarh|himachal pradesh|jammu and kashmir
+US;united states|united states of america|usa|us|u s|u s a|america|new york|nyc|san francisco|sf|seattle|austin|boston|chicago|los angeles|atlanta|denver|california|texas|washington dc|palo alto|mountain view|sunnyvale|san jose|brooklyn|bay area|silicon valley|miami|dallas|houston|portland|san diego|philadelphia|raleigh|pittsburgh
+GB;united kingdom|uk|u k|great britain|england|scotland|wales|london|manchester|edinburgh
+CA;canada|toronto|vancouver|montreal|ottawa|calgary
+DE;germany|deutschland|berlin|munich|hamburg|frankfurt
+FR;france|paris
+NL;netherlands|holland|amsterdam|rotterdam|the hague
+IE;ireland|dublin
+ES;spain|madrid|barcelona
+PT;portugal|lisbon
+IT;italy|milan|rome
+PL;poland|warsaw|krakow
+SE;sweden|stockholm
+CH;switzerland|zurich|geneva
+BE;belgium|brussels
+AT;austria|vienna
+DK;denmark|copenhagen
+NO;norway|oslo
+FI;finland|helsinki
+CZ;czech republic|czechia|prague
+RO;romania|bucharest
+UA;ukraine|kyiv|kiev
+TR;turkey|istanbul
+SG;singapore
+AE;united arab emirates|uae|dubai|abu dhabi
+SA;saudi arabia|riyadh
+IL;israel|tel aviv
+AU;australia|sydney|melbourne|brisbane
+NZ;new zealand|auckland
+JP;japan|tokyo|osaka
+KR;south korea|korea|seoul
+CN;china|beijing|shanghai|shenzhen
+HK;hong kong
+PH;philippines|manila
+ID;indonesia|jakarta
+MY;malaysia|kuala lumpur
+TH;thailand|bangkok
+VN;vietnam|hanoi|ho chi minh city
+BR;brazil|sao paulo
+MX;mexico|mexico city
+AR;argentina|buenos aires
+CO;colombia|bogota
+ZA;south africa|johannesburg|cape town
+NG;nigeria|lagos
+EG;egypt|cairo
+KE;kenya|nairobi
+PK;pakistan|karachi|lahore|islamabad
+BD;bangladesh|dhaka
+LK;sri lanka|colombo
+NP;nepal|kathmandu
+EMEA;emea|europe|middle east
+LATAM;latam|latin america
